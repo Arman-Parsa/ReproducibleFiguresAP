@@ -1,0 +1,201 @@
+---
+title: "Homework Template"
+output:
+  html_document: default
+  pdf_document: default
+date: "2023-10-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tinytex)
+library(ggplot2)
+library(palmerpenguins)
+library(janitor)
+library(dplyr)
+library(tidyverse)
+library(png)
+```
+
+
+## QUESTION 01: Data Visualisation for Science Communication
+
+*Create a figure using the Palmer Penguin dataset that is correct but badly communicates the data. **Do not make a boxplot**.*
+
+### a) Provide your figure here:
+
+```{r bad figure code, echo=FALSE}
+data("penguins")
+badscatter<- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(size = 5) + 
+  labs(title = "Flipper Length and Body Mass", 
+       x = "Flipper Length", 
+       y = "Body Mass") +
+  theme_minimal()
+
+badscatter
+```
+
+### b) Write about how your design choices mislead the reader about the underlying data (200-300 words).
+
+*Include references.*
+
+Here, I plotted a scatterplot showing the relationship between flipper length and body mass. There are a number of bad design choices here - firstly, the title poorly describes the data, and the axis labels do not provide any units. This is already a poor start, given that it gives little information about the magnitude of the data and the relationship shown. The points are also extremely large, meaning they overlap eachother and hide data-points, exacerbated by them being opaque. Finally, the points show every species of penguin, with no differentiation between the species. The lack of trend line and confidence interval also makes it difficult to see significant trends. There could even be three trend lines, one for each species to see if the correlation holds true for each, which is unclear currently. 
+
+------------------------------------------------------------------------
+
+## QUESTION 2: Data Pipeline
+
+*Write a data analysis pipeline in your .rmd RMarkdown file. You should be aiming to write a clear explanation of the steps, the figures visible, as well as clear code.*
+
+*Your code should include the steps practiced in the lab session:*
+
+-   *Load the data*
+
+-   *Appropriately clean the data*
+
+-   *Create an Exploratory Figure (**not a boxplot**)*
+
+-   *Save the figure*
+
+-   ***New**: Run a statistical test*
+
+-   ***New**: Create a Results Figure*
+
+-   *Save the figure*
+
+*An exploratory figure shows raw data, such as the distribution of the data. A results figure demonstrates the stats method chosen, and includes the results of the stats test.*
+
+*Between your code, communicate clearly what you are doing and why.*
+
+*Your text should include:*
+
+-   *Introduction*
+
+-   *Hypothesis*
+
+-   *Stats Method*
+
+-   *Results*
+
+-   *Discussion*
+
+-   *Conclusion*
+
+*You will be marked on the following:*
+
+### a) Your code for readability and functionality
+
+### b) Your figures for communication
+
+### c) Your text communication of your analysis
+
+*Below is a template you can use.*
+
+------------------------------------------------------------------------
+
+### Introduction
+
+I am going to investigate whether there is a significant relationship between body mass and flipper length for adelie penguins. I am going to clean the data, plot a clear graph of this data and then move on to perform a pearsons correlation test to see if it is significant. 
+
+The first chunk of code cleans the data, and plots a graph.
+
+```{r Data Exploration}
+#so here, I source my file with the preset cleaning functions
+source("REPRODUCIBLE_FIGURES/cleaningfunctions/cleaning.R") 
+#and then load the data
+data("penguins")
+
+#this pipeline cleans my data, removing NA values, and filtering by the species I focus on
+penguins_clean <- penguins%>%
+  remove_NA() %>%
+clean_column_names() %>%
+filter_by_species("Adelie") 
+
+#checking the data
+head(penguins_clean)
+
+#time to make a figure
+goodscatter<- ggplot(penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(size = 2, alpha = 0.5) + 
+  labs(title = "Correlation between Flipper Length and Body Mass in Adelie Penguins ", 
+       x = "Flipper Length", 
+       y = "Body Mass") 
+
+
+goodscatter
+
+# Save the plot to the subfolder
+ggsave(filename = paste0("REPRODUCIBLE_FIGURES/plots", "/goodscatter.pdf"), plot = goodscatter)
+```
+
+### Hypothesis
+
+Here I am testing whether there is a correlation between the variables. Ill use a pearson correlation coefficient and a hypothesis test. 
+- Null Hypothesis - the observed correlation is NOT significantly different from zero
+- Alternative Hypothesis - the observed correlation IS significantly different from zero
+
+This chunk of code runs the simple test.
+
+
+### Statistical Methods
+
+```{r Statistics}
+#Pearson correlation coefficient
+correlation<- cor.test(penguins_clean$flipper_length, penguins_clean$body_mass)
+
+print(correlation)
+```
+
+### Results & Discussion
+
+Here, the correlation is shown to be 0.4648539, which is positive. The p value is hugely lower than 0.05, our chosen significance level, so we can safely reject the null hypothesis and conclude that there is a significant positive correlation between the two variables.
+
+```{r Plotting Results}
+
+#here I plot my graph again, including a regression line
+regressionscatter<- ggplot(penguins_clean, aes(x = flipper_length, y = body_mass)) +
+  geom_point(size = 2, alpha = 0.5) + 
+  labs(title = "Correlation between Flipper Length and Body Mass in Adelie Penguins ", 
+       x = "Flipper Length", 
+       y = "Body Mass")  +
+  geom_smooth(method = "lm")
+
+```
+
+### Conclusion
+
+Therefore, I can conclude that For Adelie penguins, as they grow heavier, they also are more likely to have longer flippers.
+------------------------------------------------------------------------
+
+## QUESTION 3: Open Science
+
+### a) GitHub
+
+*Upload your RProject you created for **Question 2** and any files and subfolders used to GitHub. Do not include any identifiers such as your name. Make sure your GitHub repo is public.*
+
+*GitHub link:*
+
+*You will be marked on your repo organisation and readability.*
+
+### b) Share your repo with a partner, download, and try to run their data pipeline.
+
+*Partner's GitHub link:*
+
+*You **must** provide this so I can verify there is no plagiarism between you and your partner.*
+
+### c) Reflect on your experience running their code. (300-500 words)
+
+-   *What elements of your partner's code helped you to understand their data pipeline?*
+
+-   *Did it run? Did you need to fix anything?*
+
+-   *What suggestions would you make for improving their code to make it more understandable or reproducible, and why?*
+
+-   *If you needed to alter your partner's figure using their code, do you think that would be easy or difficult, and why?*
+
+### d) Reflect on your own code based on your experience with your partner's code and their review of yours. (300-500 words)
+
+-   *What improvements did they suggest, and do you agree?*
+
+-   *What did you learn about writing code for other people?*
