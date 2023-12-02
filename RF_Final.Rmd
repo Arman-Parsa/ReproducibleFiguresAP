@@ -17,39 +17,7 @@ library(tidyverse)
 library(png)
 ```
 
-
-## QUESTION 01: Data Visualisation for Science Communication
-
-*Create a figure using the Palmer Penguin dataset that is correct but badly communicates the data. **Do not make a boxplot**.*
-
-### a) Provide your figure here:
-
-```{r bad figure code, echo=FALSE}
-#here i create the bad plot - a scatterplot that shows flipper length and body mass
-data("penguins")
-badscatter<- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
-  geom_point(size = 5) + 
-  labs(title = "Flipper Length and Body Mass", 
-       x = "Flipper Length", 
-       y = "Body Mass") +
-  theme_minimal()
-
-badscatter
-```
-
-### b) Write about how your design choices mislead the reader about the underlying data (200-300 words).
-
-*Include references.*
-
-Here, I plotted a scatterplot showing the relationship between flipper length and body mass. There are a number of bad design choices here - firstly, the title poorly describes the data, and the axis labels do not provide any units. This is already a poor start, given that it gives little information about the magnitude of the data and the relationship shown. The points are also extremely large, meaning they overlap eachother and hide data-points, exacerbated by them being opaque. Finally, the points show every species of penguin, with no differentiation between the species. The lack of trend line and confidence interval also makes it difficult to see significant trends. There could even be three trend lines, one for each species to see if the correlation holds true for each, which is unclear currently. 
-
-------------------------------------------------------------------------
-
 ## QUESTION 2: Data Pipeline
-
-*Write a data analysis pipeline in your .rmd RMarkdown file. You should be aiming to write a clear explanation of the steps, the figures visible, as well as clear code.*
-
-*Your code should include the steps practiced in the lab session:*
 
 ------------------------------------------------------------------------
 
@@ -125,26 +93,5 @@ regressionscatter<- ggplot(penguins_clean, aes(x = flipper_length, y = body_mass
 ### Conclusion
 
 Therefore, I can conclude that For Adelie penguins, as they grow heavier, they also are more likely to have longer flippers.
+
 ------------------------------------------------------------------------
-
-## QUESTION 3: Open Science
-
-### a) GitHub
-
-*Upload your RProject you created for **Question 2** and any files and subfolders used to GitHub. Do not include any identifiers such as your name. Make sure your GitHub repo is public.*
-
-*GitHub link :https://github.com/panda-anon/ReproducibleFiguresAP*
-
-### b) Share your repo with a partner, download, and try to run their data pipeline.
-
-*Partner's GitHub link:*
-
-
-### c) Reflect on your experience running their code. (300-500 words)
-
-
-### d) Reflect on your own code based on your experience with your partner's code and their review of yours. (300-500 words)
-
--   *What improvements did they suggest, and do you agree?*
-
--   *What did you learn about writing code for other people?*
